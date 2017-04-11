@@ -74,3 +74,4 @@ else
 endif
 
 set guifont=courier_new:h12
+set spell
