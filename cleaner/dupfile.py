@@ -1,6 +1,6 @@
 """This module detects ."""
 
-from os.path import isdir, isfile, join, getsize
+from os.path import isdir, isfile, join, getsize, splitext
 from os import listdir, remove
 from filecmp import cmp
 
@@ -26,10 +26,16 @@ def getfilesizemap(fpath: str, filemap) -> int:
 
 def cleanupfiles(filemap):
     for key in filemap.keys():
-        if len(filemap[key]) is 1:
-            return
-        if len(filemap[key]) > 2:
-            print('more than 2 files, will be handled in next run.')
-        if cmp(filemap[key][0], filemap[key][1]):
-            print('delete duplicated file: ' + filemap[key][1])
-            remove(filemap[key][1])
+        if len(filemap[key]) == 1:
+            continue
+        if len(filemap[key]) > 1:
+            for idx, val in enumerate(filemap[key]):
+                idx2 = idx + 1
+                while idx2 < len(filemap[key]):
+                    removeduplicatedfiles(filemap[key][idx], filemap[key][idx2])
+                    idx2 = idx2 + 1
+
+def removeduplicatedfiles(file1, file2): 
+    if isfile(file1) and isfile(file2) and cmp(file1, file2):
+        print('delete duplicated file: ' + file2)
+        remove(file2)
